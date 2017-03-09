@@ -1,0 +1,15 @@
+# Project specific
+.local.*
+.idea
+.vscode
+ff.*
+
+
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+

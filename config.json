@@ -1,0 +1,7 @@
+{
+    "connection": {
+        "service": "xe", 
+        "user": "hr",
+        "password": "hr"
+    }
+}
