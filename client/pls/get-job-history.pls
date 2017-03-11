@@ -1,5 +1,5 @@
 declare
-  c_empl hr_utils.empl_short_cursor_t;
+  c_empl hr_utils.empl_breaf_cursor_t;
   v_empl c_empl%rowtype;
 
     procedure report_job_history(p_empl_id  employees.employee_id%type)
@@ -24,9 +24,9 @@ declare
         fetch c_empl into v_empl;
         exit when c_empl%notfound;
 
-       dbms_output.put_line('--- Job history of ' || v_empl.first_name  || ' ' || v_empl.last_name || ' (id:' || v_empl.empl_id || '):');
-       report_job_history(v_empl.empl_id);
-       dbms_output.put_line(chr(13) || chr(10));
+         dbms_output.put_line('--- Job history of ' || v_empl.first_name  || ' ' || v_empl.last_name || ' (id:' || v_empl.empl_id || '):');
+         report_job_history(v_empl.empl_id);
+         dbms_output.put_line(chr(13) || chr(10));
       end loop;
 
       close c_empl;

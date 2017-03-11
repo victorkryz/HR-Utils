@@ -3,5 +3,6 @@
         "service": "xe", 
         "user": "hr",
         "password": "hr"
-    }
+    },
+    "sqlplusPath": "sqlplus"
 }

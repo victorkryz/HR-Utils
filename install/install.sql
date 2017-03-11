@@ -67,8 +67,8 @@ create or replace view employees_consolidated_view as
 
 
 -- create packages:
-@./packages/hr-utils-spec.pls
-@./packages/hr-utils.pls
+@./packages/hr-utils-spec.pks
+@./packages/hr-utils.pks
 
 disconnect
 

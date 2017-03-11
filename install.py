@@ -1,10 +1,12 @@
 import sys
-from py.launch_sql_script import launchScript
-from py.config import Config
+sys.path.append('./py.aux')
+
+from config import getConnectionString
+from launch_sql_script import launchScript
 
 def main(argv):
-    cfg = Config('config.json')
-    launchScript(cfg, "@./install/install.sql")
+    connStr = getConnectionString('config.json')
+    launchScript(connStr, "@./install/install.sql")
 
 if __name__ == "__main__":
    main(sys.argv[1:])
