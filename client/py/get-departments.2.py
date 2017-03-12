@@ -7,4 +7,4 @@ from launch_sql_script import launchScriptOnTemplate
 
 if __name__ == "__main__":
    connStr = getConnectionString('config.json')
-   launchScriptOnTemplate(connStr, "get-departments.2.pls")
+   exit(launchScriptOnTemplate(connStr, "get-departments.2.pls"))

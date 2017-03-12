@@ -5,9 +5,9 @@ create or replace package body hr_utils is
   procedure check_country(p_country_id in countries.country_id%type);
   procedure check_location(p_loc_id in locations.location_id%type);
   procedure check_after_empl_updating(p_employee_id in employees.employee_id%type);
-  
+
   E_UNKNOWN_EMPLOYEE_msg constant varchar2(200) := 'Unknown employee (id: %1)';
-  
+
   procedure get_regions(p_regions out nocopy regions_t, p_names_filter in string_list_t)
   is
     type c_regions is ref cursor return regions%rowtype;
@@ -32,7 +32,7 @@ create or replace package body hr_utils is
   end get_regions;
 
 
-  procedure get_countries(p_region_id in regions.region_id%type, p_countries in out nocopy countries_t)
+  procedure get_countries(p_region_id in regions.region_id%type, p_countries out countries_t)
   is
       type c_countries is ref cursor return countries_entry_t;
       v_curs c_countries;
@@ -50,7 +50,7 @@ create or replace package body hr_utils is
   end get_countries;
 
 
-  procedure get_locations(p_country_id in countries.country_id%type, p_locations in out nocopy locations_t)
+  procedure get_locations(p_country_id in countries.country_id%type, p_locations out locations_t)
   is
       cursor c_locations(cp_country_id  countries.country_id%type) return locations_entry_t is
               select location_id, country_id, street_address, postal_code, city, state_province
@@ -90,7 +90,7 @@ create or replace package body hr_utils is
 
   end get_locations;
 
-  procedure get_departments(p_location_id in locations.location_id%type, p_departments in out nocopy departments_t)
+  procedure get_departments(p_location_id in locations.location_id%type, p_departments out departments_t)
   is
       cursor c_departments(cp_location_id locations.location_id%type) return departments_entry_t is
               select department_descr_t(department_id, department_name), manager_id
@@ -105,7 +105,7 @@ create or replace package body hr_utils is
 
   end get_departments;
 
-  procedure get_departments(p_names_filter in string_list_t, p_departments in out nocopy departments_map_t)
+  procedure get_departments(p_names_filter in string_list_t, p_departments out departments_map_t)
   is
     v_curs sys_refcursor;
     v_dep departments_entry_t;
@@ -185,44 +185,44 @@ create or replace package body hr_utils is
      return c_empl;
 
   end get_employees_with_job_history;
-  
+
   procedure get_employees_by_full_name(p_names in string_list_t, p_ids out number_list_t)
   is
   begin
-    select cast (multiset                                     
-      (select id from 
+    select cast (multiset
+      (select id from
           (select employee_id as id, first_name ||' ' || last_name as full_name from employees) a
-                  where a.full_name in 
+                  where a.full_name in
                           (select value(a) from table(p_names)a))
                                          as number_list_t) into p_ids from dual;
   end get_employees_by_full_name;
-  
-  
+
+
   procedure get_employees(p_ids in number_list_t, p_employees out employee_set_t, b_for_update in boolean)
   is
-    v_stmt varchar2(500) := 
-        'select cast (multiset                                     
+    v_stmt varchar2(500) :=
+        'select cast (multiset
           (select employee_descr_t(employee_id, first_name, last_name, email, phone_number, department_id,
-                  hire_date, job_id, commission_pct, salary, manager_id)   from 
-              (select * from employees) a 
-                        where a.employee_id in 
+                  hire_date, job_id, commission_pct, salary, manager_id)   from
+              (select * from employees) a
+                        where a.employee_id in
                               (select value(a) from table(:1)a))
                                              as employee_set_t) from dual';
   begin
     if ( b_for_update ) then
       v_stmt := v_stmt || ' for update';
     end if;
-    
+
     execute immediate v_stmt into p_employees using p_ids;
-    
+
   end get_employees;
-  
-  function  get_department_stat(p_dep_id in departments.department_id%type) 
+
+  function  get_department_stat(p_dep_id in departments.department_id%type)
                                                  return department_stat_cursor_t
   as
      c_stat department_stat_cursor_t;
   begin
-    if ( p_dep_id is null ) then     
+    if ( p_dep_id is null ) then
       open c_stat for
         select department_descr_t(department_id, a.department_name), count(employee_id),
               sum(salary), max(salary), min(salary), avg(salary)
@@ -235,28 +235,28 @@ create or replace package body hr_utils is
                     from employees inner join departments a using (department_id)
                     group by department_id, a.department_name
                     having department_id = p_dep_id;
-    
+
      end if;
-     
+
      return c_stat;
-     
+
   end get_department_stat;
 
-  function composite_employees(p_src_sel in employee_consolidated_cursor_t) 
+  function composite_employees(p_src_sel in employee_consolidated_cursor_t)
                                             return employee_composite_set_t pipelined
   is
     v_srow  employees_consolidated_t;
     v_drow employee_composite_entry_t;
   begin
-    
+
   loop
       fetch p_src_sel into v_srow;
       exit when p_src_sel%notfound;
-      
-      v_drow.empl_descr := 
-          employee_descr_t(v_srow.employee_id, v_srow.first_name, v_srow.last_name, v_srow.email, v_srow.phone, 
+
+      v_drow.empl_descr :=
+          employee_descr_t(v_srow.employee_id, v_srow.first_name, v_srow.last_name, v_srow.email, v_srow.phone,
                            v_srow.department_id, v_srow.hire_date, v_srow.job_id, v_srow.commission, v_srow.salary, v_srow.manager_id);
-      v_drow.dep_descr := department_descr_t(v_srow.department_id, v_srow.department_name); 
+      v_drow.dep_descr := department_descr_t(v_srow.department_id, v_srow.department_name);
       v_drow.empl_decorated_name := v_srow.rank_decorator || ' '|| v_srow.full_name;
       v_drow.job_title := v_srow.job_title;
       v_drow.is_manager := v_srow.is_manager;
@@ -266,11 +266,11 @@ create or replace package body hr_utils is
       v_drow.region_name := v_srow.region_name;
 
       pipe row(v_drow);
-      
+
     end loop;
-  
+
     close p_src_sel;
-  
+
   end composite_employees;
 
 
@@ -294,46 +294,46 @@ create or replace package body hr_utils is
     end loop;
 
   end add_employees;
-  
-  
-  procedure update_employee_job(p_employee_id in employees.employee_id%type, p_job_id in employees.job_id%type, 
+
+
+  procedure update_employee_job(p_employee_id in employees.employee_id%type, p_job_id in employees.job_id%type,
                                  p_department_id in employees.department_id%type, p_manager_id in employees.manager_id%type)
   is
     v_msg varchar2(100);
   begin
     update employees set job_id = p_job_id, department_id = p_department_id, manager_id = p_manager_id
                                                                         where employee_id = p_employee_id;
-    check_after_empl_updating(p_employee_id);                                                                                                                          
+    check_after_empl_updating(p_employee_id);
   end update_employee_job;
-  
+
   procedure update_employee_reward(p_employee_id in employees.employee_id%type, p_salary in employees.salary%type, p_commission in commission_t)
   is
   begin
-    update employees set salary = p_salary, commission_pct = p_commission 
+    update employees set salary = p_salary, commission_pct = p_commission
                                                     where employee_id = p_employee_id;
-    check_after_empl_updating(p_employee_id);                                                    
+    check_after_empl_updating(p_employee_id);
   end update_employee_reward;
-  
-  function remove_employees(p_employees in number_list_t) 
+
+  function remove_employees(p_employees in number_list_t)
                                           return number
   is
    v_removed_count number := 0;
   begin
     if ( p_employees.count = 0) then
         return 0;
-    end if;    
-  
-    forall  i in p_employees.first..p_employees.last 
+    end if;
+
+    forall  i in p_employees.first..p_employees.last
         delete from departments where manager_id = p_employees(i);
-    forall  i in p_employees.first..p_employees.last 
+    forall  i in p_employees.first..p_employees.last
         delete from job_history where employee_id = p_employees(i);
-    forall  i in p_employees.first..p_employees.last 
+    forall  i in p_employees.first..p_employees.last
       delete from employees where employee_id = p_employees(i);
-      
-    v_removed_count := sql%rowcount; -- rowcount of the latest DML 
-      
+
+    v_removed_count := sql%rowcount; -- rowcount of the latest DML
+
     return v_removed_count;
-    
+
   end remove_employees;
 
 
@@ -370,17 +370,17 @@ create or replace package body hr_utils is
        select 1 into v_tag from departments where department_id = p_dep_id;
        exception when no_data_found then raise unknown_department;
   end check_department;
-  
-  
+
+
 procedure check_after_empl_updating(p_employee_id in employees.employee_id%type)
   is
   begin
     if (  Sql%Rowcount = 0 ) then
-      raise_application_error(E_UNKNOWN_EMPLOYEE, 
+      raise_application_error(E_UNKNOWN_EMPLOYEE,
                               replace(E_UNKNOWN_EMPLOYEE_msg, '%1', to_char(p_employee_id)), false);
-    end if;                                                
+    end if;
 end check_after_empl_updating;
-  
+
 begin
     null;
 end hr_utils;

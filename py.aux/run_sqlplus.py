@@ -8,6 +8,7 @@ def execSqlPlus(connStr, sqlCommand):
     if not sqlplusPath:
        sqlplusPath = os.environ.get('ORACLE_HOME') + '/bin/sqlplus'
 
-    session = Popen([sqlplusPath, connStr], stdin=PIPE)
-    session.stdin.write(sqlCommand)
-    session.communicate()
+    pipe = Popen([sqlplusPath, connStr], stdin=PIPE, stdout=None, stderr=None)
+    pipe.stdin.write(sqlCommand)
+    out, err = pipe.communicate()
+    return pipe.returncode

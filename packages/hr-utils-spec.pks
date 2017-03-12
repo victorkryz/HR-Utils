@@ -9,14 +9,14 @@ create or replace package hr_utils as
     type countries_entry_t is record
       (id countries.country_id%type,
        name countries.country_name%type);
-     
+
     subtype employees_consolidated_t is employees_consolidated_view%rowtype;
-    
+
     type department_stat_t is record
         (department department_descr_t,
          empl_number number(4),
-         sal_total employees.salary%type,          
-         sal_max_val employees.salary%type,          
+         sal_total employees.salary%type,
+         sal_max_val employees.salary%type,
          sal_min_val employees.salary%type,
          sal_avg_val employees.salary%type);
 
@@ -46,7 +46,7 @@ create or replace package hr_utils as
         last_name employees.last_name%type,
         dep_id departments.department_id%type
     );
-    
+
     type employee_composite_entry_t is record
     (
         empl_decorated_name varchar2(150),
@@ -81,16 +81,16 @@ create or replace package hr_utils as
     unknown_location exception;
     unknown_country exception;
     unknown_department exception;
-    
+
     -- defintion of app. error codes:
     E_UNKNOWN_EMPLOYEE constant int := -20300;
 
     procedure get_regions(p_regions out regions_t, p_names_filter in string_list_t := null);
-    procedure get_countries(p_region_id in regions.region_id%type, p_countries in out nocopy countries_t);
-    procedure get_locations(p_country_id in countries.country_id%type, p_locations in out nocopy locations_t);
+    procedure get_countries(p_region_id in regions.region_id%type, p_countries out countries_t);
+    procedure get_locations(p_country_id in countries.country_id%type, p_locations out locations_t);
     procedure get_locations(p_names_filter in string_list_t, p_locations out locations_t);
-    procedure get_departments(p_location_id in locations.location_id%type, p_departments in out nocopy departments_t);
-    procedure get_departments(p_names_filter in string_list_t, p_departments in out nocopy departments_map_t);
+    procedure get_departments(p_location_id in locations.location_id%type, p_departments out departments_t);
+    procedure get_departments(p_names_filter in string_list_t, p_departments out departments_map_t);
     function  get_department_stat(p_dep_id in departments.department_id%type default null) return department_stat_cursor_t;
     function  get_employees(p_dep_id in departments.department_id%type) return empl_cursor_t;
     procedure get_employees(p_ids in number_list_t, p_employees out employee_set_t, b_for_update in boolean := false);
