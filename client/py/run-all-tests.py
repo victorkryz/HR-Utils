@@ -1,22 +1,14 @@
-import os
-import subprocess
-import sys
-sys.path.append('../../')
-sys.path.append('./client/py/')
+from launch_script import launchScript
 
 testCount = 0
 passedTestCount = 0
-
-def execSiblingScript(strScript):
-    curScripPath = os.path.dirname(os.path.realpath(__file__))
-    return subprocess.call(curScripPath + '/' + strScript + ".py", shell=True)
-
 
 def checkExecResult(strScript):        
     global testCount
     global passedTestCount
 
-    rcode = execSiblingScript(strScript)
+
+    rcode = launchScript(strScript + ".pls")
     testCount += 1
     if rcode == 0:
         passedTestCount += 1

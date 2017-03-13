@@ -1,10 +1,4 @@
-import sys
-sys.path.append('../../')
-sys.path.append('./py.aux')
-
-from config import getConnectionString
-from launch_sql_script import launchScriptOnTemplate
+from launch_script import launchScript
 
 if __name__ == "__main__":
-    connStr = getConnectionString('config.json')
-    exit(launchScriptOnTemplate(connStr, "update-employees.pls"))
+   exit(launchScript("update-employees.pls"));
