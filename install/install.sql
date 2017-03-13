@@ -5,7 +5,6 @@ whenever sqlerror exit SQL.SQLCODE;
 
 prompt "HR-Utils" installing ...
 
-
 prompt  ... - synonyms ...
 
 create or replace synonym string_list_t for sys.ODCIVarchar2List;
@@ -77,8 +76,8 @@ create or replace view employees_consolidated_view as
 prompt  ... - packages ...
 
 -- create packages:
-@./packages/hr-utils-spec.pks
 @./packages/hr-utils.pks
+@./packages/hr-utils.pkb
 
 
 prompt "HR-Utils" installation completed!

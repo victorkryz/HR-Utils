@@ -26,6 +26,7 @@ begin
 
   exception when hr_utils.unknown_department then
           dbms_output.put_line('unknown deprtment id - ' || v_dep_id);
+          raise;
 
 end;
 /

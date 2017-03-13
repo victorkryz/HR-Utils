@@ -94,6 +94,7 @@ begin
                   v_err_msg := substr(SQLERRM, 1, 200);
                   dbms_output.put_line('"Unknown employee" exception! (error code: '||  v_err_code ||  ' description: ' || v_err_msg);
                   rollback;
+                  raise;
              when others then       
                   v_err_code := SQLCODE;
                   v_err_msg := substr(SQLERRM, 1, 600);
@@ -102,5 +103,6 @@ begin
                       dbms_output.put_line(' * tip: see comments at the top of this script file');
                   end if;    
                   rollback;
+                  raise;
 end;
 /

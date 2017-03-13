@@ -23,6 +23,7 @@ begin
 
   exception when hr_utils.unknown_location then
           dbms_output.put_line('unknown location id - ' || v_loc_id);
+          raise;
 
 end;
 /

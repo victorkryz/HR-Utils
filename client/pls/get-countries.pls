@@ -18,5 +18,6 @@ begin
 
    exception when hr_utils.unknown_region then
           dbms_output.put_line('unknown region id: ' || v_reg_id);
+          raise;
 end;
 /

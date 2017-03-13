@@ -30,7 +30,7 @@ declare
 
 begin
 
-   dbms_output.put_line('--- add new employees and report ther id(s) (id, first_name, last_name, job_id, department id, slary, commission):');  
+   dbms_output.put_line('--- add new employees and report ther id(s) (id, first_name, last_name, job_id, department id, salary, commission):');  
    execute immediate 'alter session set isolation_level = READ COMMITTED';
 
    hr_utils.get_departments(v_names, v_deps);

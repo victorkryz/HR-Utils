@@ -3,39 +3,47 @@ from launch_script import launchScript
 testCount = 0
 passedTestCount = 0
 
-def checkExecResult(strScript):        
-    global testCount
-    global passedTestCount
+def execScript(strScript):
+    return launchScript(strScript + ".pls")
 
-
-    rcode = launchScript(strScript + ".pls")
-    testCount += 1
+def execScriptWithDiag(strScript):    
+    rcode = execScript(strScript)
     if rcode == 0:
-        passedTestCount += 1
         print '"' + strScript + '"' + " succeeded!"
     else:
         print '"' + strScript + '"' + " failed :( (error code: " + str(rcode) + ")"
     return rcode
+
+
+def execScriptWithStat(strScript):        
+    global testCount
+    global passedTestCount
+
+    rcode = execScriptWithDiag(strScript)
+    testCount += 1
+    if rcode == 0:
+        passedTestCount += 1
+    return rcode
      
 
 if __name__ == "__main__":
-    rcode = checkExecResult("connection-check")
+    rcode = execScriptWithDiag("connection-check")
     if (rcode != 0):
        print "Connection check failed!" 
        print "(tip: check \"config.json\" for correctness of Oracle server connection parameters)" 
     else:   
-        checkExecResult("add-employees")
-        checkExecResult("update-employees")
-        checkExecResult("get-regions")
-        checkExecResult("get-locations")
-        checkExecResult("get-countries")
-        checkExecResult("get-departments")
-        checkExecResult("get-departments.2")
-        checkExecResult("get-department-stat")
-        checkExecResult("get-employees")
-        checkExecResult("get-job-history")
-        checkExecResult("get-consolidated-report")
-        checkExecResult("release-employees")
+        execScriptWithStat("add-employees")
+        execScriptWithStat("get-regions")
+        execScriptWithStat("get-locations")
+        execScriptWithStat("get-countries")
+        execScriptWithStat("get-departments")
+        execScriptWithStat("get-departments.2")
+        execScriptWithStat("get-department-stat")
+        execScriptWithStat("update-employees")
+        execScriptWithStat("get-employees")
+        execScriptWithStat("get-job-history")
+        execScriptWithStat("get-consolidated-report")
+        execScriptWithStat("release-employees")
         print "statistic:"   
         print str(passedTestCount) + " tests passed of " + str(testCount) + " launched."
         if ( testCount > passedTestCount):
