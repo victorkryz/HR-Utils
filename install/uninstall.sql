@@ -3,6 +3,7 @@ set feedback off
 whenever oserror exit failure;
 whenever sqlerror exit SQL.SQLCODE;
 
+prompt "HR-Utils" uninstalling ...
 
 declare
   procedure exec_ddl(p_strStatement varchar2) as
@@ -22,6 +23,8 @@ begin
     exec_ddl('drop view employees_consolidated_view');
 end;
 /
+
+prompt "HR-Utils" uninstallation finished!
 
 disconnect
 exit

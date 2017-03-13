@@ -3,9 +3,15 @@ set feedback off
 whenever oserror exit failure;
 whenever sqlerror exit SQL.SQLCODE;
 
+prompt "HR-Utils" installing ...
+
+
+prompt  ... - synonyms ...
 
 create or replace synonym string_list_t for sys.ODCIVarchar2List;
 /
+
+prompt   ... - types ...
 
 create or replace synonym number_list_t for sys.odcinumberlist;
 /
@@ -42,6 +48,8 @@ create or replace type department_descr_t as object
 );
 /
 
+prompt   ... - views...
+
 create or replace view employees_consolidated_view as
   with sq as (select * from
        (select level l, employee_id,  first_name ||' ' || last_name as full_name,
@@ -66,9 +74,14 @@ create or replace view employees_consolidated_view as
 /                    
 
 
+prompt  ... - packages ...
+
 -- create packages:
 @./packages/hr-utils-spec.pks
 @./packages/hr-utils.pks
+
+
+prompt "HR-Utils" installation completed!
 
 disconnect
 
