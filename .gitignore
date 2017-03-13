@@ -1,4 +1,5 @@
 # Project specific
+.local/
 .local.*
 .idea
 .vscode
