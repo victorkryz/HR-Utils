@@ -18,7 +18,7 @@ declare
           if ( p_empls is null ) then
             dbms_output.put_line('collection is null-value');
           elsif (p_empls is null) then
-             dbms_output.put_line('collection is emptyt');
+             dbms_output.put_line('collection is empty');
           else
               for v_i in p_empls.first..p_empls.last loop
                   dbms_output.put_line(p_empls(v_i).empl_id || ', ' || p_empls(v_i).first_name || '    ' || p_empls(v_i).last_name ||
