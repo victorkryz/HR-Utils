@@ -1,31 +1,33 @@
 # HR-Utils
-HR-Utils is a Pl/SQL package(s) enables operating on HR schema's entities
-using its API (Pl/SQL user types, oracle object types, collections) insted of 
-direct access to HR's tables.
+HR-Utils is a Pl/SQL package enables operating on HR schema entities
+using its API (Pl/SQL user types, oracle object types, collections) 
+as an alternative of direct access to HR's tables.
 
-# Common
-The package consists of:
-- *"package"* directory:
-     + HR-Utils Pl/SQl package  
+## Common
+The repository consists of:
+- *"packages"* directory:
+     + "HR-Utils" Pl/SQl package  
 - *"client"* directory:
-     + "pls":  PL/SQL scripts as a samples (tests) of using HR-Utils API;
+     + "pls":  PL/SQL scripts as samples/tests of using HR-Utils API;
      + "py": starters of these scripts;
  - *"install"* directory:     
-     - SQL scripts for installing/uninstalling HR-Utils on Oracle server
+     - SQL scripts for installing/uninstalling HR-Utils on Oracle server;
  - *"py.aux"* directory:        
-     -  auxiliary py-scripts for internal using
+     -  auxiliary py-scripts for internal using on the installing/uninstalling/testing phases;
 
-HR-Utils API is specified in package specification (*package/hr-utils.pks*).
+HR-Utils API is declared in package specification (*package/hr-utils.pks*).
 
 
-# Prerequisits
-- Oracle Server with installed HR schema (*)
+## Prerequisites
+- Oracle Server with installed HR schema
 - Oracle client (at list sqlplus)
 - Python 2 
 
-# Configuration
+(see bellow detailed version info)
+
+## Configuration
 At the core of configuration there's a single file "config.json"
-intended to provide the next kind of iformation:
+intended to provide the next kind of information:
 
 - Oracle server connection info;
 - "sqlplus" utility access way
@@ -43,25 +45,25 @@ intended to provide the next kind of iformation:
 A such approach supposes the oracle service local naming exists in the system configured with *tnsnames.ora*
 file (located in folder *$ORACLE_HOME/network/admin*).
 
-Prameters:
+Parameters:
 
     - "service" - oracle service (local name);
     - "user" and "password" - user (schema) name (usually "hr") and password respectively;
     - "sqlplusPath" - defines "sqlplus" utility path
-            - full path to the sqlplus (recommended)
-            - in case sqlplus path is registered in the environment variable %PATH%, possible to assign just utility name (e.g. "sqlplus")
-            - "empty value" (launcher tries try to deduct path to utility basing on "ORACLE_HOME" env. variable)
+            - full path to the sqlplus (recommended) 
+              (e.g. */u01/app/oracle/product/11.2.0/xe/bin/sqlplus*)  
+            - in case sqlplus path is included in the environment variable %PATH%, possible to assign utility name (e.g. "sqlplus")
 
 
 To check configuration is correct use connection check procedure:
   *"python client/py/connection-check.py"*
 
 
-# Installing/uninstalling
+## Installing/uninstalling
 
-Before installing, be sure congigureation file is correct and connection check passes successfuly!
+Before installing, be sure configuration file is correct and connection check passes successfully!
 
-- for launch installing procedure, execute instal.py script (*"python install.py"* )
+- for launch installing procedure, execute install.py script (*"python install.py"* )
 - for uninstalling, launch uninstall.py script (*"python install.py*")
 
 
@@ -70,15 +72,15 @@ Before installing, be sure congigureation file is correct and connection check p
 In the directory "client/pls" there're a set of different Pl/SQL procedures
 that use HR-Utils API. 
 They can be executed directly by "sqlplus" utility. 
-It's possibly to copy/past a content of any of them into some SQL-plus workbanch  
+It's possibly to copy/past a content of any of them into some SQL-plus worksheet  
 for executing in GUI mode (e.g. - Oracle SQL Developer, JDeveloper)
 
-In the directory "client/py" a set of py-scripts thet executes these tests respectively
-in conivinient command-line manner.
+In the directory "client/py" a set of py-scripts that executes these tests respectively
+in convenient command-line manner.
 
 For example:
 
-- *run an each single tests by steps:*
+- *run a single tests by steps:*
 
         python client/py/get-department-stat.py
         python client/py/get-employees.py
@@ -89,12 +91,22 @@ For example:
 
         python client/py/run-all-tests.py
 
-Pay attention: the working (current) directory python has to be a root of the package.
+Pay attention: the working (current) directory python has to be a root of the repo.
 
-It was tested on the follow configurations:
- -  Windows 7 (64-bit):
-    -  Oracle Database 11g Express Edition Release 11.2.0.2.0 
-    -  Python 2.7.10
+#####Project tested on the follows configurations:
 
+ 1. Windows 7 (64-bit):
+    - Oracle Database 11g Express Edition Release 11.2.0.2.0 
+    - sqlplus Release 11.2.0.2
+    - Python 2.7.10
+ 2. Oracle Linux Server 7.2 (64-bit):
+    - Oracle Database 12c Enterprise Edition Release 12.1.0.2.0    
+    - sqlplus Release 12.1.0.2
+    - Python 2.7.5
+3.  Red Hat 7.2 (64-bit):
+    -  Oracle Database 11g Express Edition Release 11.2.0.2.0
+    -  sqlplus Release 11.2.0.2
+    - Python 2.7.5
+        
 
 
