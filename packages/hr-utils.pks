@@ -1,5 +1,12 @@
 create or replace package hr_utils as
 
+/**
+ * HR-Utils
+ *
+ * @author Victor Kryzhanivskyi
+ *
+ */
+
     -- defintion of user types:
     subtype commission_t is pls_integer range 0..1;
 
@@ -196,7 +203,7 @@ create or replace package hr_utils as
     */
     procedure get_job_history(p_employee_id in employees.employee_id%type, p_history out job_history_t);
 
-    /**
+   /**
     *   Table-function that composites input records of cursor 
     *   with type employee_consolidated_cursor_t into cursor 
     *   of type employee_composite_set_t

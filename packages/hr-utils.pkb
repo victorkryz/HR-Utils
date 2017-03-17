@@ -8,6 +8,12 @@ create or replace package body hr_utils is
 
   E_UNKNOWN_EMPLOYEE_msg constant varchar2(200) := 'Unknown employee (id: %1)';
 
+ /**
+ *   selects regions. 
+ *
+ *      p_regions - (output) collection to put list of regions_entry_t elements;
+ *      p_names_filter - (optional) list of region names 
+ */
   procedure get_regions(p_regions out nocopy regions_t, p_names_filter in string_list_t)
   is
     type c_regions is ref cursor return regions%rowtype;
@@ -31,7 +37,13 @@ create or replace package body hr_utils is
 
   end get_regions;
 
-
+/**
+ *   selects countries by region id.
+ *
+ *       p_region_id - region id; 
+ *       p_countries - (output) collection to put list of  countries_entry_t elements
+ *       exceptions: raises "unknown_region" in case specified region is not found
+ */
   procedure get_countries(p_region_id in regions.region_id%type, p_countries out countries_t)
   is
       type c_countries is ref cursor return countries_entry_t;
@@ -50,6 +62,13 @@ create or replace package body hr_utils is
   end get_countries;
 
 
+/**
+ *   selects locations by country id.
+ *
+ *       p_country_id - country id; 
+ *       p_locations - (output) collection to put list of locations_entry_t elements
+ *       exceptions: raises "unknown_country" in case specified country is not found
+ */
   procedure get_locations(p_country_id in countries.country_id%type, p_locations out locations_t)
   is
       cursor c_locations(cp_country_id  countries.country_id%type) return locations_entry_t is
@@ -65,6 +84,12 @@ create or replace package body hr_utils is
 
   end get_locations;
 
+/**
+ *   selects locations by names.
+ *
+ *       p_names_filter - list of location names;
+ *       p_locations - (output) collection to put list of locations_entry_t elements;
+ */
   procedure get_locations(p_names_filter in string_list_t, p_locations out locations_t)
   is
       type c_locations is ref cursor return locations_entry_t;
@@ -90,6 +115,14 @@ create or replace package body hr_utils is
 
   end get_locations;
 
+
+ /**
+  *   selects departments by location id.
+  *
+  *       p_location_id - location id; 
+  *       p_departments - (output) collection to put list of departments_entry_t elements;
+  *       exceptions: raises "unknown_location" in case specified location is not found
+  */
   procedure get_departments(p_location_id in locations.location_id%type, p_departments out departments_t)
   is
       cursor c_departments(cp_location_id locations.location_id%type) return departments_entry_t is
@@ -105,6 +138,13 @@ create or replace package body hr_utils is
 
   end get_departments;
 
+
+ /**
+  *   selects departments by names.
+  *
+  *       p_names_filter - list of separtment names;
+  *       p_departments - (output) collection to put list of departments_entry_t elements;
+  */
   procedure get_departments(p_names_filter in string_list_t, p_departments out departments_map_t)
   is
     v_curs sys_refcursor;
@@ -122,7 +162,12 @@ create or replace package body hr_utils is
         close v_curs;
   end get_departments;
 
-
+ /**
+  *   get job history of specified employee:
+  *
+  *       p_employee_id - employee id;
+  *       p_history - (output) param to put job_history_t
+  */
   procedure get_job_history(p_employee_id in employees.employee_id%type, p_history out job_history_t)
   is
       type c_hist is ref cursor;
@@ -144,6 +189,14 @@ create or replace package body hr_utils is
   end get_job_history;
 
 
+/**
+  *   selects employees by department:
+  *
+  *       p_dep_id - department id;
+  *       returns -  open cursor with empl_cursor_t elements
+  *                  (a client appliocation must close cursor 
+  *                   when it is no longer needed);
+  */
   function get_employees(p_dep_id in departments.department_id%type)
                                           return empl_cursor_t
   as
@@ -186,6 +239,13 @@ create or replace package body hr_utils is
 
   end get_employees_with_job_history;
 
+ /**
+  *   selects employee id(s) by provided employee's full names
+  *   ("full name" is a string built by template: "first name" + "space" + "last name"):
+  *
+  *       p_names_filter - list employee's full names;
+  *       p_ids - (output) list of selected employee id(s);
+  */
   procedure get_employees_by_full_name(p_names in string_list_t, p_ids out number_list_t)
   is
   begin
@@ -198,6 +258,15 @@ create or replace package body hr_utils is
   end get_employees_by_full_name;
 
 
+ /**
+  *   selects employees by their id(s):
+  *
+  *       p_ids - list of employee id(s);
+  *       p_employees - (output) collection to put list of employee_descr_t elements;
+  *       b_for_update - (optional) indicates to lock selected elements for subsequent modification
+  *                                 (elements will be locked up to the end of current transaction) 
+  *       exceptions: raises "unknown_department"
+  */
   procedure get_employees(p_ids in number_list_t, p_employees out employee_set_t, b_for_update in boolean)
   is
     v_stmt varchar2(500) :=
@@ -217,6 +286,15 @@ create or replace package body hr_utils is
 
   end get_employees;
 
+
+/**
+ *   selects department's statistics.
+ *
+ *       p_dep_id - (optional) department id;
+ *       returns  -  open cursor with department_stat_t elements,
+ *                   (a client appliocation must close cursor 
+ *                   when it is no longer needed);
+ */
   function  get_department_stat(p_dep_id in departments.department_id%type)
                                                  return department_stat_cursor_t
   as
@@ -242,6 +320,17 @@ create or replace package body hr_utils is
 
   end get_department_stat;
 
+
+ /**
+  *   Table-function that composites input records of cursor 
+  *   with type employee_consolidated_cursor_t into cursor 
+  *   of type employee_composite_set_t
+  *
+  *       p_src_sel - cursor of type employee_consolidated_cursor_t
+  *       returns - cursor with type employee_composite_set_t
+  *                  (a client application must close cursor 
+  *                   when it is no longer needed);  
+  */
   function composite_employees(p_src_sel in employee_consolidated_cursor_t)
                                             return employee_composite_set_t pipelined
   is
@@ -273,7 +362,13 @@ create or replace package body hr_utils is
 
   end composite_employees;
 
-
+ /**
+  *   Adds new employees 
+  *
+  *       p_employees - (input, output) set of the employee_descr_t structures;
+  *       returns - id(s) of each employee into field "empl_id" of each 
+  *                  provided employee descriptor;  
+  */
   procedure add_employees(p_employees in out nocopy employee_set_t)
   is
     v_tmp number_list_t;
@@ -295,7 +390,16 @@ create or replace package body hr_utils is
 
   end add_employees;
 
-
+/**
+  *   Updates job, manager and department of the specified employee 
+  *
+  *       p_employee_id - target employee id;
+  *       p_job_id - job id;
+  *       p_department_id - department id;
+  *       p_manager_id - manager id;
+  *       exceptions: raises an application error E_UNKNOWN_EMPLOYEE 
+  *                    case specified employee is not found
+  */
   procedure update_employee_job(p_employee_id in employees.employee_id%type, p_job_id in employees.job_id%type,
                                  p_department_id in employees.department_id%type, p_manager_id in employees.manager_id%type)
   is
@@ -306,6 +410,16 @@ create or replace package body hr_utils is
     check_after_empl_updating(p_employee_id);
   end update_employee_job;
 
+ /**
+  *   Updates salary and commission of the specified employee 
+  *
+  *       p_employee_id - target employee id;
+  *       p_salary - salary value;
+  *       p_commission - commission value;
+  *       exceptions: raises an application error E_UNKNOWN_EMPLOYEE 
+  *                    case specified employee is not found
+  *    
+  */
   procedure update_employee_reward(p_employee_id in employees.employee_id%type, p_salary in employees.salary%type, p_commission in commission_t)
   is
   begin
@@ -314,6 +428,14 @@ create or replace package body hr_utils is
     check_after_empl_updating(p_employee_id);
   end update_employee_reward;
 
+
+
+ /**
+  *   Removes specified employees 
+  *
+  *       p_employees - (input) list of the employee id(s) to remove;
+  *       returns - number of removed employees;
+  */
   function remove_employees(p_employees in number_list_t)
                                           return number
   is
@@ -337,6 +459,9 @@ create or replace package body hr_utils is
   end remove_employees;
 
 
+ /**
+  *  raises unknown_region if p_reg_id is invalid
+  */
   procedure check_region(p_reg_id in regions.region_id%type)
   is
       v_tag number(1) default null;
@@ -346,6 +471,9 @@ create or replace package body hr_utils is
   end check_region;
 
 
+ /**
+  *  raises unknown_country if p_country_id is invalid
+  */
   procedure check_country(p_country_id in countries.country_id%type)
   is
       v_tag number(1) default null;
@@ -354,7 +482,9 @@ create or replace package body hr_utils is
        exception when no_data_found then raise unknown_country;
   end check_country;
 
-
+  /**
+  *  raises unknown_location if p_loc_id is invalid
+  */
   procedure check_location(p_loc_id in locations.location_id%type)
   is
       v_tag number(1) default null;
@@ -363,6 +493,9 @@ create or replace package body hr_utils is
        exception when no_data_found then raise unknown_location;
   end check_location;
 
+ /**
+  *  raises unknown_department if p_dep_id is invalid
+  */
   procedure check_department(p_dep_id in departments.department_id%type)
   is
       v_tag number(1) default null;
@@ -372,6 +505,9 @@ create or replace package body hr_utils is
   end check_department;
 
 
+/**
+ *  raises application error E_UNKNOWN_EMPLOYEE if  sql%Rowcount is 0
+ */
 procedure check_after_empl_updating(p_employee_id in employees.employee_id%type)
   is
   begin

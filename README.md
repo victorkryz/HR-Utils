@@ -91,7 +91,7 @@ For example:
 
         python client/py/run-all-tests.py
 
-Pay attention: the working (current) directory python has to be a root of the repo.
+**Pay attention:** *the working (current) python's directory has to be always a root of the repo!*
 
 
 #### Project tested on the follow configurations:
