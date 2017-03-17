@@ -67,7 +67,7 @@ Before installing, be sure configuration file is correct and connection check pa
 - for uninstalling, launch uninstall.py script (*"python install.py*")
 
 
-# Testing
+## Testing
 
 In the directory "client/pls" there're a set of different Pl/SQL procedures
 that use HR-Utils API. 
