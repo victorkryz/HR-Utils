@@ -7,10 +7,10 @@ create or replace package hr_utils as
  *
  */
 
-    -- defintion of user types:
+    -- definition of user types:
     subtype commission_t is pls_integer range 0..1;
 
-    -- defintion of structured types:
+    -- definition of structured types:
     subtype regions_entry_t is regions%rowtype;
 
     type countries_entry_t is record
@@ -67,7 +67,7 @@ create or replace package hr_utils as
         region_name regions.region_name%type
     );
 
-    -- defintion of collection types:
+    -- definition of collection types:
     type employee_composite_set_t is table of employee_composite_entry_t;
     type regions_t is table of regions_entry_t;
     type countries_t is table of countries_entry_t;
@@ -76,20 +76,20 @@ create or replace package hr_utils as
     type job_history_t is table of job_history_entry_t;
     type departments_map_t is table of departments_entry_t index by departments.department_name%type;
 
-    -- defintion of cursor types:
+    -- definition of cursor types:
     type empl_cursor_t is ref cursor return employees%rowtype;
     type dep_cursor_t is ref cursor return departments%rowtype;
     type empl_breaf_cursor_t is ref cursor return employee_brief_entry_t;
     type employee_consolidated_cursor_t is ref cursor return employees_consolidated_t;
     type department_stat_cursor_t is ref cursor return department_stat_t;
 
-     -- defintion of exception types:
+     -- definition of exception types:
     unknown_region exception;
     unknown_location exception;
     unknown_country exception;
     unknown_department exception;
 
-    -- defintion of app. error codes:
+    -- definition of app. error codes:
     E_UNKNOWN_EMPLOYEE constant int := -20300;
 
    /**
@@ -138,8 +138,8 @@ create or replace package hr_utils as
    /**
     *   selects departments by names.
     *
-    *       p_names_filter - list of separtment names;
-    *       p_departments - (output) collection to put list of departments_entry_t elements;
+    *       p_names_filter - list of department names;
+    *       p_departments - (output) collection (map) to put pairs {department name, departments_entry_t}
     */
     procedure get_departments(p_names_filter in string_list_t, p_departments out departments_map_t);
 
@@ -148,7 +148,7 @@ create or replace package hr_utils as
     *
     *       p_dep_id - (optional) department id;
     *       returns  -  open cursor with department_stat_t elements,
-    *                   (a client appliocation must close cursor 
+    *                   (a client application must close cursor
     *                   when it is no longer needed);
     */
     function  get_department_stat(p_dep_id in departments.department_id%type default null) return department_stat_cursor_t;
@@ -158,7 +158,7 @@ create or replace package hr_utils as
     *
     *       p_dep_id - department id;
     *       returns -  open cursor with empl_cursor_t elements
-    *                  (a client appliocation must close cursor 
+    *                  (a client application must close cursor
     *                   when it is no longer needed);
     */
     function  get_employees(p_dep_id in departments.department_id%type) return empl_cursor_t;
@@ -179,7 +179,7 @@ create or replace package hr_utils as
     *
     *       p_dep_id - (optional) department id;
     *       returns -  open cursor with empl_breaf_cursor_t elements
-    *                   (a client appliocation must close cursor 
+    *                   (a client application must close cursor
     *                   when it is no longer needed);
     *       exceptions: raises "unknown_department" in case p_dep_id is not null,
     *                   but is invalid value

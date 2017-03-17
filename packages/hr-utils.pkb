@@ -142,8 +142,8 @@ create or replace package body hr_utils is
  /**
   *   selects departments by names.
   *
-  *       p_names_filter - list of separtment names;
-  *       p_departments - (output) collection to put list of departments_entry_t elements;
+  *       p_names_filter - list of department names;
+  *       p_departments - (output) collection (map) to put pairs {department name, departments_entry_t}
   */
   procedure get_departments(p_names_filter in string_list_t, p_departments out departments_map_t)
   is
@@ -194,7 +194,7 @@ create or replace package body hr_utils is
   *
   *       p_dep_id - department id;
   *       returns -  open cursor with empl_cursor_t elements
-  *                  (a client appliocation must close cursor 
+  *                  (a client application must close cursor 
   *                   when it is no longer needed);
   */
   function get_employees(p_dep_id in departments.department_id%type)
@@ -292,7 +292,7 @@ create or replace package body hr_utils is
  *
  *       p_dep_id - (optional) department id;
  *       returns  -  open cursor with department_stat_t elements,
- *                   (a client appliocation must close cursor 
+ *                   (a client application must close cursor 
  *                   when it is no longer needed);
  */
   function  get_department_stat(p_dep_id in departments.department_id%type)
@@ -506,7 +506,7 @@ create or replace package body hr_utils is
 
 
 /**
- *  raises application error E_UNKNOWN_EMPLOYEE if  sql%Rowcount is 0
+ *  check if last DML has selected data
  */
 procedure check_after_empl_updating(p_employee_id in employees.employee_id%type)
   is
