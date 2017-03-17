@@ -1,6 +1,6 @@
 # HR-Utils
 HR-Utils is a Pl/SQL package enables operating on HR schema entities
-using its API (Pl/SQL user types, oracle object types, collections) 
+using packages's API (Pl/SQL procedures, user types, oracle object types, collections) 
 as an alternative of direct access to HR's tables.
 
 ## Common
@@ -21,7 +21,7 @@ HR-Utils API is declared in package specification (*package/hr-utils.pks*).
 ## Prerequisites
 - Oracle Server with installed HR schema
 - Oracle client (at list sqlplus)
-- Python 2 
+- Python 2 (used as an launcher for sql scripts on the installing/uninstalling/testing phases )
 
 (see bellow detailed version info)
 
@@ -93,7 +93,8 @@ For example:
 
 Pay attention: the working (current) directory python has to be a root of the repo.
 
-#####Project tested on the follows configurations:
+
+#### Project tested on the follow configurations:
 
  1. Windows 7 (64-bit):
     - Oracle Database 11g Express Edition Release 11.2.0.2.0 
@@ -107,6 +108,6 @@ Pay attention: the working (current) directory python has to be a root of the re
     -  Oracle Database 11g Express Edition Release 11.2.0.2.0
     -  sqlplus Release 11.2.0.2
     - Python 2.7.5
-        
+ 4. Windows client (see item 1) and remote Oracle server (see item 2)       
 
 
