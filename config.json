@@ -1,6 +1,6 @@
 {
     "connection": {
-        "service": "tsclient_orcl", 
+        "service": "xe", 
         "user": "hr",
         "password": "hr"
     },

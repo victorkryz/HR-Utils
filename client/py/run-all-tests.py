@@ -1,3 +1,4 @@
+import time
 from launch_script import launchScript
 
 testCount = 0
@@ -39,7 +40,12 @@ if __name__ == "__main__":
         execScriptWithStat("get-departments")
         execScriptWithStat("get-departments.2")
         execScriptWithStat("get-department-stat")
+
+        # make a small sleep to avoid "JOB_HISTORY" table constraint "JHIST_DATE_INTERVAL"
+        # before modification of employees:
+        time.sleep(1)
         execScriptWithStat("update-employees")
+
         execScriptWithStat("get-employees")
         execScriptWithStat("get-job-history")
         execScriptWithStat("get-consolidated-report")
