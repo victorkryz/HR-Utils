@@ -3,7 +3,7 @@ HR-Utils is a Pl/SQL package enables operating on HR schema entities
 using packages API (Pl/SQL procedures, user types, oracle object types, collections) 
 as an alternative of a direct querying/modifying HR's tables.
 
-## Structure
+## Project directory structure
 The repository consists of:
 - *"packages"* directory:
      + "HR-Utils" Pl/SQl package  
