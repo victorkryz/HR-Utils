@@ -14,7 +14,7 @@ declare
  E_UNSUITABLE_SERVER_VERSION constant int := -20100;
  
      function to_ver_str(p_ver in pls_integer, p_release in pls_integer) 
-                                                       eturn varchar2 as
+                                                       return varchar2 as
       v_str varchar2(20) := p_ver || '.' || p_release;                                       
      begin
       return v_str;
