@@ -32,7 +32,7 @@ intended to provide the next kind of information:
 - Oracle server connection info;
 - "sqlplus" utility access way
 
-
+```json
         {
             "connection": {
                 "service": "xe", 
@@ -41,6 +41,7 @@ intended to provide the next kind of information:
             },
             "sqlplusPath": "sqlplus"
         }
+```        
 
 A such approach supposes the oracle service local naming exists in the system configured with *tnsnames.ora*
 file (located in folder *$ORACLE_HOME/network/admin*).
