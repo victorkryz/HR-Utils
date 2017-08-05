@@ -20,7 +20,7 @@ HR-Utils API is declared in package specification (*package/hr-utils.pks*).
 
 ## Prerequisites
 - Oracle Server (version 11.2 or higher) with installed HR schema
-- Oracle client (at list sqlplus)
+- Oracle client (at least sqlplus)
 - Python 2 (used as an launcher for sql scripts on the installing/uninstalling/testing phases )
 
 (see bellow detailed version info)
