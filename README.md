@@ -65,7 +65,7 @@ To check configuration is correct use connection check procedure:
 Before installing, be sure configuration file is correct and connection check passes successfully!
 
 - for launch installing procedure, execute install.py script (*"python install.py"* )
-- for uninstalling, launch uninstall.py script (*"python install.py*")
+- for uninstalling, launch uninstall.py script (*"python uninstall.py*")
 
 
 ## Testing
